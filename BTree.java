@@ -53,7 +53,7 @@ public class BTree
     public BTree(int rootItem)
     {
         root = new node(rootItem);
-        size = 0;
+        size = 1;
     }
 
     public void insert(int newData)
@@ -248,60 +248,24 @@ public class BTree
         }
     }
 
-    public int height()
-    {
-        Queue<node> main = new LinkedList<node>(), temp = new LinkedList<node>();
-        node item;
-        int count = 0;
-        main.add(root);
-        while(true)
-        {
-            while(!main.isEmpty())
-            {
-                item = main.peek();
-                main.remove();
-                if(item.lTree != null || item.rTree != null)
-                {
-                    if(item.lTree != null)
-                        temp.add(item.lTree);
-                    if(item.rTree != null)
-                        temp.add(item.rTree);
-                }
-
-            }
-            if(temp.isEmpty())
-                break;
-            else
-            {
-                Queue<node> ptr = main;
-                main = temp;
-                temp = ptr;
-                ++count;
-            }
-        }
-        return count;
-    }
-
-
-
 
     public static void main(String args[])
     {
-//        int arr[] = {30, 10, 55, 20, 45, 70, 15, 25};
-        int arr[] = {3, 4, 5, 6, 7, 8, 9, 10};
-
-        BTree n = new BTree();
-        for(int i = 0; i < arr.length; ++i)
-            n.insert(arr[i]);
-
-//        n.inOrderTraversal();
-//        n.preOrderTraversal();
-//          n.postOrderTraversal();
-//        n.breadthTraversal();
-//        System.out.println("size is: " + n.contains(14));
-//        n.remove(10);
-//        n.inOrderTraversal();
-        System.out.println(n.height());
-        System.out.println("hello world\n");
+////        int arr[] = {30, 10, 55, 20, 45, 70, 15, 25};
+//        int arr[] = {3, 4, 5, 6, 7, 8, 9, 10};
+//
+//        BTree n = new BTree();
+//        for(int i = 0; i < arr.length; ++i)
+//            n.insert(arr[i]);
+//
+////        n.inOrderTraversal();
+////        n.preOrderTraversal();
+////          n.postOrderTraversal();
+////        n.breadthTraversal();
+////        System.out.println("size is: " + n.contains(14));
+////        n.remove(10);
+////        n.inOrderTraversal();
+//        System.out.println(n.height());
+//        System.out.println("hello world\n");
     }
 }
