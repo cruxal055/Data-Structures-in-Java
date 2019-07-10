@@ -53,9 +53,9 @@ public class AvlTree
             ++size;
         }
         else
-            traverse(root, newData);
+            traverse(root, newData, 0);
     }
-    private void traverse(Node nodeItem, int newData)
+    private int traverse(Node nodeItem, int newData, int counter)
     {
         if(newData < nodeItem.data)
         {
@@ -65,7 +65,9 @@ public class AvlTree
                 ++size;
             }
             else
-                traverse(nodeItem.lTree, newData);
+            {
+                counter = traverse(nodeItem.lTree, newData, counter);
+            }
         }
         else
         {
@@ -77,9 +79,13 @@ public class AvlTree
                     ++size;
                 }
                 else
-                    traverse(nodeItem.rTree, newData);
+                {
+                    counter = traverse(nodeItem.rTree, newData, counter);
+                }
             }
         }
+        nodeItem.height = ++counter;
+        return counter;
     }
 
 
@@ -182,10 +188,17 @@ public class AvlTree
         return size;
     }
 
+    public int getHeight()
+    {
+        return root.height;
+    }
+
 
 
     public static void main(String args[])
     {
+        AvlTree stoff = new AvlTree(5);
+        stoff.insert(10);
 
     }
 
