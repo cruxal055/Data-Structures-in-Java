@@ -53,9 +53,12 @@ public class AvlTree
             ++size;
         }
         else
-            traverse(root, newData, 0);
+            traverse(root, null,  newData, 0);
+
     }
-    private int traverse(Node nodeItem, int newData, int counter)
+
+
+    private int traverse(Node nodeItem, Node parent, int newData, int counter)
     {
         if(newData < nodeItem.data)
         {
@@ -66,7 +69,7 @@ public class AvlTree
             }
             else
             {
-                counter = traverse(nodeItem.lTree, newData, counter);
+                counter = traverse(nodeItem.lTree, nodeItem, newData, counter);
             }
         }
         else
@@ -80,13 +83,48 @@ public class AvlTree
                 }
                 else
                 {
-                    counter = traverse(nodeItem.rTree, newData, counter);
+                    counter = traverse(nodeItem.rTree, nodeItem, newData, counter);
                 }
             }
         }
         nodeItem.height = ++counter;
+//        if(nodeItem.height > 1)
+//        {
+//            right(nodeItem, parent);
+//        }
         return counter;
     }
+    //AVL rotations
+    private void left(Node item)
+    {
+
+
+    }
+
+    public void right(Node item, Node parent)
+    {
+        Node temp;
+        if(item.rTree.lTree == null)
+        {
+            temp = item;
+            if(parent == null)
+                root = item.rTree;
+            else
+                parent = item.rTree;
+            temp.lTree = temp.rTree = null;
+            root.lTree = temp;
+        }
+        else
+        {
+            temp = root;
+            root = root.rTree;
+            Node temp2 = root.lTree;
+            root.lTree = temp;
+            root.lTree.rTree = temp2;
+        }
+    }
+
+
 
 
 
@@ -115,7 +153,6 @@ public class AvlTree
         {
             if(newData > child.data)
             {
-                System.out.println("fuck you\n");
                 parent = child;
                 child = child.rTree;
             }
@@ -197,8 +234,15 @@ public class AvlTree
 
     public static void main(String args[])
     {
-        AvlTree stoff = new AvlTree(5);
-        stoff.insert(10);
+        AvlTree temp = new AvlTree();
+        int arr[] = {2,1,4,3,5,6};
+        for(int i = 1; i < 7; ++i)
+            temp.insert(i);
+        temp.right(temp.root, null);
+        int x = 5;
+        System.out.println(temp.getHeight());
+
+
 
     }
 
