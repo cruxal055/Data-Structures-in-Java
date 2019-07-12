@@ -87,7 +87,9 @@ public class AvlTree
                 }
             }
         }
-        nodeItem.height = ++counter;
+        ++counter;
+        if(nodeItem.height < counter)
+            nodeItem.height = counter;
 //        if(nodeItem.height > 1)
 //        {
 //            right(nodeItem, parent);
@@ -95,33 +97,49 @@ public class AvlTree
         return counter;
     }
     //AVL rotations
-    private void left(Node item)
+    private void left(Node item, Node parent)
     {
-
 
     }
 
     public void right(Node item, Node parent)
     {
         Node temp;
+        int leftH, rightH;
         if(item.rTree.lTree == null)
         {
-            temp = item;
             if(parent == null)
+            {
                 root = item.rTree;
+                temp = root;
+            }
             else
-                parent = item.rTree;
-            temp.lTree = temp.rTree = null;
-            root.lTree = temp;
+            {
+                parent.rTree = item.rTree;
+                temp = parent;
+            }
+            item.lTree = item.rTree = null;
+            item.height = 0;
+            temp.height = 1;
+            temp.lTree = item;
         }
         else
         {
+            System.out.println("yo");
             temp = root;
             root = root.rTree;
             Node temp2 = root.lTree;
             root.lTree = temp;
             root.lTree.rTree = temp2;
+
+            int height1, height2;
+            height1 = root.lTree.rTree.height;
+            height2 = root.lTree.lTree.height;
+            root.lTree.height = height1 >= height2 ? height1+1 : height2+1;
+            root.height = root.lTree.height >= root.rTree.height ?
+                    root.lTree.height+1 : root.rTree.height+1;
         }
+
     }
 
 
@@ -235,11 +253,12 @@ public class AvlTree
     public static void main(String args[])
     {
         AvlTree temp = new AvlTree();
-        int arr[] = {2,1,4,3,5,6};
-        for(int i = 1; i < 7; ++i)
-            temp.insert(i);
-        temp.right(temp.root, null);
+//        int arr[] = {2,1,4,3,5,6};
+        int arr[] = {4,2,6,1,3,5,7,8,9};
+        for(int i = 0; i < arr.length; ++i)
+            temp.insert(arr[i]);
         int x = 5;
+        temp.right(temp.root.rTree.rTree, temp.root.rTree);
         System.out.println(temp.getHeight());
 
 
