@@ -148,42 +148,23 @@ public class AvlTree
            root = focus;
        }
     }
-    public void right(Node item, Node parent)
+    public void right(Node item)
     {
-        Node temp;
-        int leftH, rightH;
-        if(item.rTree.lTree == null)
+        Node temp = item.rTree;
+        if(temp.lTree != null)
         {
-            if(parent == null)
-            {
-                root = item.rTree;
-                temp = root;
-            }
-            else
-            {
-                parent.rTree = item.rTree;
-                temp = item.rTree;
-            }
-            item.lTree = item.rTree = null;
-            item.height = 0;
-            temp.height = 1;
+            Node temp2 = temp.lTree;
+            item.rTree = null;
+            item.rTree = temp2;
             temp.lTree = item;
         }
         else
         {
-            temp = root;
-            root = root.rTree;
-            Node temp2 = root.lTree;
-            root.lTree = temp;
-            root.lTree.rTree = temp2;
-
-            int height1, height2;
-            height1 = root.lTree.rTree.height;
-            height2 = root.lTree.lTree.height;
-            root.lTree.height = height1 >= height2 ? height1+1 : height2+1;
-            root.height = root.lTree.height >= root.rTree.height ?
-                    root.lTree.height+1 : root.rTree.height+1;
+            item.rTree = null;
+            temp.lTree = item;
         }
+        root =  temp;
+
 
     }
 
@@ -298,17 +279,12 @@ public class AvlTree
     public static void main(String args[])
     {
         AvlTree temp = new AvlTree();
-//        int arr[] = {2,1,4,3,5,6};
+        int arr[] = {2,1,4,3,5,6};
 //        int arr[] = {4,2,6,1,3,5,7,8,9};
-        int arr[] = {80, 60, 100, 55, 65, 64};
         for(int i = 0; i < arr.length; ++i)
             temp.insert(arr[i]);
-        Node hory = temp.root;
-        Node hory2 = temp.root.lTree;
-        temp.leftRight(temp.root, null);
-//        Node omfg1 = temp.root.rTree.rTree;
-//        Node omfg2 = temp.root.rTree;
-//        temp.right(omfg1, omfg2);
+        temp.right(temp.root);
+
         int x = 5;
         System.out.println(temp.getHeight());
 
