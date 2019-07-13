@@ -28,6 +28,17 @@ public class AvlTree
         {
             return rTree.height - lTree.height;
         }
+
+        Node retrieveChild()
+        {
+            return (lTree == null) ? rTree : lTree;
+        }
+
+        void wipeNonData()
+        {
+            height = 0;
+            lTree = rTree = null;
+        }
     }
 
     private Node root;
@@ -102,6 +113,41 @@ public class AvlTree
 
     }
 
+    public void leftRight(Node inbalance, Node parent)
+    {
+        Node temp;
+       if(inbalance.lTree == null)
+       {
+           if(parent == null)
+           {
+               temp = root;
+               root = root.lTree.rTree;
+               root.lTree = temp.lTree;
+               root.rTree = temp;
+               root.lTree.wipeNonData();
+               root.rTree.wipeNonData();
+           }
+           else
+           {
+               parent.lTree = inbalance.rTree.lTree;
+               Node careAbout = parent.lTree;
+                careAbout.lTree = inbalance;
+                careAbout.rTree = inbalance.rTree;
+                careAbout.lTree.wipeNonData();
+                careAbout.rTree.wipeNonData();
+           }
+       }
+       else
+       {
+           Node focus = root.lTree.rTree, child;
+           child = focus.retrieveChild();
+           focus.lTree = root.lTree;
+           root.lTree = null;
+           focus.rTree = root;
+           focus.lTree.rTree = child;
+           root = focus;
+       }
+    }
     public void right(Node item, Node parent)
     {
         Node temp;
@@ -116,7 +162,7 @@ public class AvlTree
             else
             {
                 parent.rTree = item.rTree;
-                temp = parent;
+                temp = item.rTree;
             }
             item.lTree = item.rTree = null;
             item.height = 0;
@@ -125,7 +171,6 @@ public class AvlTree
         }
         else
         {
-            System.out.println("yo");
             temp = root;
             root = root.rTree;
             Node temp2 = root.lTree;
@@ -254,11 +299,17 @@ public class AvlTree
     {
         AvlTree temp = new AvlTree();
 //        int arr[] = {2,1,4,3,5,6};
-        int arr[] = {4,2,6,1,3,5,7,8,9};
+//        int arr[] = {4,2,6,1,3,5,7,8,9};
+        int arr[] = {80, 60, 100, 55, 65, 64};
         for(int i = 0; i < arr.length; ++i)
             temp.insert(arr[i]);
+        Node hory = temp.root;
+        Node hory2 = temp.root.lTree;
+        temp.leftRight(temp.root, null);
+//        Node omfg1 = temp.root.rTree.rTree;
+//        Node omfg2 = temp.root.rTree;
+//        temp.right(omfg1, omfg2);
         int x = 5;
-        temp.right(temp.root.rTree.rTree, temp.root.rTree);
         System.out.println(temp.getHeight());
 
 
