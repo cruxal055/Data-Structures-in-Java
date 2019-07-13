@@ -163,10 +163,49 @@ public class AvlTree
             item.rTree = null;
             temp.lTree = item;
         }
-        root =  temp;
-
-
+//        root =  temp;
     }
+
+    public void left(Node item)
+    {
+        Node temp = item.lTree;
+        if(item.rTree != null)
+        {
+            item.lTree = null;
+            item.lTree = temp.rTree;
+            temp.rTree = item;
+        }
+        else
+        {
+            item.lTree = null;
+            temp.rTree = item;
+        }
+    }
+
+    public Node leftRight(Node item)
+    {
+        Node temp;
+        temp = item.lTree.rTree;
+        item.lTree.rTree = null;
+        if(item.rTree != null)
+        {
+            temp.lTree = item.lTree;
+            item.lTree = null;
+            Node temp2 = temp.rTree;
+            temp.rTree = item;
+            item.rTree.lTree = temp2;
+        }
+        else
+        {
+             temp.lTree = item.lTree;
+             item.lTree = null;
+             temp.rTree = item;
+        }
+        return temp;
+    }
+
+
+
 
 
 
