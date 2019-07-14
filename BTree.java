@@ -121,7 +121,7 @@ public class BTree
         {
             if(newData > child.data)
             {
-                System.out.println("fuck you\n");
+
                 parent = child;
                 child = child.rTree;
             }
