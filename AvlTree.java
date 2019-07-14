@@ -7,7 +7,7 @@ public class AvlTree
     {
         NOT_A_VALUE;
     }
-    class Node
+    class Node implements Comparable<Node>
     {
         public int data;
         public Node lTree, rTree;
@@ -26,7 +26,10 @@ public class AvlTree
         }
         int getAVLVal()
         {
-            return rTree.height - lTree.height;
+            int val1, val2;
+            val1 = (rTree != null) ? rTree.height + 1 : 0;
+            val2 = lTree != null ? lTree.height + 1 : 0;
+            return Math.abs(val1  - val2 );
         }
 
         Node retrieveChild()
@@ -39,6 +42,13 @@ public class AvlTree
             height = 0;
             lTree = rTree = null;
         }
+
+        public int compareTo(Node other)
+        {
+            return other.data - data;
+        }
+
+
     }
 
     private Node root;
@@ -98,57 +108,35 @@ public class AvlTree
                 }
             }
         }
+
         ++counter;
         if(nodeItem.height < counter)
+        {
             nodeItem.height = counter;
-//        if(nodeItem.height > 1)
-//        {
-//            right(nodeItem, parent);
-//        }
+        }
+
+
+        if(nodeItem.getAVLVal() > 1)
+        {
+            nodeItem = right(nodeItem);
+            if(parent == null)
+                root = nodeItem;
+            else
+            {
+                if (nodeItem.compareTo(parent) > 0)
+                    parent.lTree = nodeItem;
+                else
+                    parent.rTree = nodeItem;
+            }
+            counter = nodeItem.height;
+        }
+
         return counter;
     }
     //AVL rotations
-    private void left(Node item, Node parent)
-    {
 
-    }
 
-    public void leftRight(Node inbalance, Node parent)
-    {
-        Node temp;
-       if(inbalance.lTree == null)
-       {
-           if(parent == null)
-           {
-               temp = root;
-               root = root.lTree.rTree;
-               root.lTree = temp.lTree;
-               root.rTree = temp;
-               root.lTree.wipeNonData();
-               root.rTree.wipeNonData();
-           }
-           else
-           {
-               parent.lTree = inbalance.rTree.lTree;
-               Node careAbout = parent.lTree;
-                careAbout.lTree = inbalance;
-                careAbout.rTree = inbalance.rTree;
-                careAbout.lTree.wipeNonData();
-                careAbout.rTree.wipeNonData();
-           }
-       }
-       else
-       {
-           Node focus = root.lTree.rTree, child;
-           child = focus.retrieveChild();
-           focus.lTree = root.lTree;
-           root.lTree = null;
-           focus.rTree = root;
-           focus.lTree.rTree = child;
-           root = focus;
-       }
-    }
-    public void right(Node item)
+    public Node right(Node item)
     {
         Node temp = item.rTree;
         if(temp.lTree != null)
@@ -157,13 +145,22 @@ public class AvlTree
             item.rTree = null;
             item.rTree = temp2;
             temp.lTree = item;
+            Node lTree = temp.lTree;
+
+            lTree.height = (lTree.rTree.height + 1) > (lTree.lTree.height + 1) ?
+                    lTree.rTree.height + 1 : lTree.lTree.height + 1;
+            temp.height = (temp.rTree.height + 1) > (temp.lTree.height + 1) ?
+                    (temp.rTree.height + 1) : (temp.lTree.height + 1);
+            int wt = 77;
         }
         else
         {
             item.rTree = null;
             temp.lTree = item;
+            item.height = 0;
+            temp.height = 1;
         }
-//        root =  temp;
+        return temp;
     }
 
     public void left(Node item)
@@ -203,6 +200,29 @@ public class AvlTree
         }
         return temp;
     }
+
+    public Node rightLeft(Node item)
+    {
+        Node temp;
+        temp = item.rTree.lTree;
+        item.rTree.lTree = null;
+        if(item.lTree != null)
+        {
+            temp.rTree = item.rTree;
+            item.rTree = null;
+            Node temp2 = temp.lTree;
+            temp.lTree = item;
+            item.lTree.rTree = temp2;
+        }
+        else
+        {
+            temp.rTree = item.rTree;
+            item.rTree = null;
+            temp.lTree = item;
+        }
+        return temp;
+    }
+
 
 
 
@@ -318,16 +338,16 @@ public class AvlTree
     public static void main(String args[])
     {
         AvlTree temp = new AvlTree();
-        int arr[] = {2,1,4,3,5,6};
-//        int arr[] = {4,2,6,1,3,5,7,8,9};
+
+//        int arr[] = {1,2,3};
+//                int arr[] = {4,2,8,1,3,6,10,5,7,9,11,12};
+        int arr[] = {1,2,3,4,5};
+
+        //        int arr[] = {4,2,6,1,3,5,7,8,9};
         for(int i = 0; i < arr.length; ++i)
             temp.insert(arr[i]);
-        temp.right(temp.root);
-
+        System.out.println("height is: " + temp.getHeight());
         int x = 5;
-        System.out.println(temp.getHeight());
-
-
 
     }
 
