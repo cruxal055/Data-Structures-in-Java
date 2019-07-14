@@ -120,7 +120,8 @@ public class AvlTree
         if(nodeItem.getAVLVal() > 1)
         {
 //            nodeItem = right(nodeItem);
-            nodeItem = left(nodeItem);
+            System.out.println("balancing at: " + nodeItem.data);
+            nodeItem = leftRight(nodeItem);
             if(parent == null)
                 root = nodeItem;
             else
@@ -138,7 +139,7 @@ public class AvlTree
     //AVL rotations
 
 
-    public Node right(Node item)
+    private Node right(Node item)
     {
         Node temp = item.rTree;
         if(temp.lTree != null)
@@ -188,26 +189,51 @@ public class AvlTree
         return temp;
     }
 
-    public Node leftRight(Node item)
+
+
+    private void retreiveHeight(Node item)
+    {
+      if(item.rTree == null)
+          item.height = item.lTree.height;
+      else
+      {
+          if(item.lTree == null)
+              item.height = item.rTree.height;
+          else
+          {
+              item.height = (item.lTree.height + 1) >= (item.rTree.height + 1)
+                      ? (item.lTree.height + 1)  : (item.rTree.height + 1);
+          }
+      }
+    }
+
+    private Node leftRight(Node item)
     {
         Node temp;
         temp = item.lTree.rTree;
         item.lTree.rTree = null;
         if(item.rTree != null)
         {
+            Node temp1 = temp.lTree, temp2 = temp.rTree;
             temp.lTree = item.lTree;
             item.lTree = null;
-            Node temp2 = temp.rTree;
             temp.rTree = item;
-            item.rTree.lTree = temp2;
+            if(temp1 != null)
+                temp.lTree.rTree = temp1;
+            if(temp2 != null)
+                temp.rTree.lTree = temp2;
+            retreiveHeight(temp.lTree);
+            retreiveHeight(temp.rTree);
+            temp.height = (temp.lTree.height + 1) >= (temp.rTree.height + 1)
+                    ? (temp.lTree.height + 1)  : (temp.rTree.height + 1);
         }
         else
         {
-            item.height = 0;
              temp.lTree = item.lTree;
              item.lTree = null;
              temp.rTree = item;
              temp.height = 1;
+             temp.lTree.height = temp.rTree.height = 0;
         }
         return temp;
     }
