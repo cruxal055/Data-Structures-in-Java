@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.ArrayList;
 
 public class AvlTree
 {
@@ -118,7 +119,8 @@ public class AvlTree
 
         if(nodeItem.getAVLVal() > 1)
         {
-            nodeItem = right(nodeItem);
+//            nodeItem = right(nodeItem);
+            nodeItem = left(nodeItem);
             if(parent == null)
                 root = nodeItem;
             else
@@ -151,7 +153,6 @@ public class AvlTree
                     lTree.rTree.height + 1 : lTree.lTree.height + 1;
             temp.height = (temp.rTree.height + 1) > (temp.lTree.height + 1) ?
                     (temp.rTree.height + 1) : (temp.lTree.height + 1);
-            int wt = 77;
         }
         else
         {
@@ -163,20 +164,28 @@ public class AvlTree
         return temp;
     }
 
-    public void left(Node item)
+    public Node left(Node item)
     {
         Node temp = item.lTree;
         if(item.rTree != null)
         {
             item.lTree = null;
             item.lTree = temp.rTree;
+            item.height = (item.rTree.height + 1) >=  (item.lTree.height + 1)
+                    ? (item.rTree.height + 1) :  (item.lTree.height + 1);
+            temp.rTree = null;
             temp.rTree = item;
+            temp.height = (temp.rTree.height + 1) >= (temp.lTree.height + 1)
+                    ?  (item.lTree.height + 1) :  (temp.lTree.height + 1);
         }
         else
         {
             item.lTree = null;
             temp.rTree = item;
+            item.height = 0;
+            temp.height = 1;
         }
+        return temp;
     }
 
     public Node leftRight(Node item)
@@ -194,9 +203,11 @@ public class AvlTree
         }
         else
         {
+            item.height = 0;
              temp.lTree = item.lTree;
              item.lTree = null;
              temp.rTree = item;
+             temp.height = 1;
         }
         return temp;
     }
@@ -222,11 +233,6 @@ public class AvlTree
         }
         return temp;
     }
-
-
-
-
-
 
 
 
@@ -334,20 +340,44 @@ public class AvlTree
     }
 
 
+    public ArrayList<Integer> inOrderTraversal()
+    {
+        ArrayList<Integer> item = new ArrayList<>();
+        inOrder(root, item);
+        return item;
+    }
+
+    private void inOrder(Node current, ArrayList<Integer> allItems)
+    {
+
+        if(current == null)
+            return;
+        else
+        {
+            inOrder(current.lTree, allItems);
+            allItems.add(current.data);
+            inOrder(current.rTree, allItems);
+        }
+    }
+
+
+
+
 
     public static void main(String args[])
     {
         AvlTree temp = new AvlTree();
-
-//        int arr[] = {1,2,3};
-//                int arr[] = {4,2,8,1,3,6,10,5,7,9,11,12};
-        int arr[] = {1,2,3,4,5};
-
-        //        int arr[] = {4,2,6,1,3,5,7,8,9};
+//
+////        int arr[] = {1,2,3};
+                int arr[] = {4,2,8,1,3,6,10,5,7,9,11,12};
+//        int arr[] = {1,2,3,4,5, 6};
+//
+//        //        int arr[] = {4,2,6,1,3,5,7,8,9};
         for(int i = 0; i < arr.length; ++i)
             temp.insert(arr[i]);
-        System.out.println("height is: " + temp.getHeight());
-        int x = 5;
+        temp.inOrderTraversal();
+//        System.out.println("height is: " + temp.getHeight());
+//        int x = 5;
 
     }
 
