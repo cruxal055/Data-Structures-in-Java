@@ -6,7 +6,6 @@ public class AvlTree
 {
     enum errors
     {
-        NOT_A_VALUE;
     }
     class Node implements Comparable<Node>
     {
@@ -113,14 +112,18 @@ public class AvlTree
                 }
             }
         }
-
+        counter = isBalanced(nodeItem, parent, newData, counter);
         ++counter;
         if(nodeItem.height < counter)
         {
             nodeItem.height = counter;
         }
+        return counter;
+    }
+    //AVL rotations
 
-
+    private int isBalanced(Node nodeItem, Node parent, int newData, int counter)
+    {
         if(Math.abs(nodeItem.getAVLVal()) > 1)
         {
 
@@ -156,13 +159,11 @@ public class AvlTree
                 else
                     parent.rTree = nodeItem;
             }
-            counter = nodeItem.height;
+            return nodeItem.height;
         }
-
         return counter;
-    }
-    //AVL rotations
 
+    }
 
     private Node right(Node item)
     {
@@ -303,17 +304,16 @@ public class AvlTree
 
     public void remove(int toRemove)
     {
-        if(!removeTraverse(root, null, toRemove ))
-            System.out.println("not a value");
+        removeTraverse(root, null, toRemove );
 
     }
 
-    private boolean removeTraverse(Node child, Node parent, int newData)
+    private void removeTraverse(Node child, Node parent, int newData)
     {
 
-        if(child == null) {
-            System.out.println("returned\n");
-            return false;
+        if(child == null)
+        {
+            throw new IllegalArgumentException("Value not Found in Tree");
 
         }
         if(newData < child.data)
@@ -332,7 +332,6 @@ public class AvlTree
             else
             {
                 int count = 0;
-
                 count+=((child.lTree != null) ? 1 : 0);
                 count+=((child.rTree != null) ? 1 : 0);
                 switch(count)
@@ -363,13 +362,15 @@ public class AvlTree
                         child.data = parentReference.lTree.data;
                         parentReference.lTree = null;
                         break;
-                    default:
+                    default: //here for good practice
                 }
-                return true;
+
             }
         }
-        return removeTraverse(child, parent, newData);
+
+        removeTraverse(child, parent, newData);
     }
+
     public boolean contains(int itemToCheck)
     {
         return containsTraverse(root, itemToCheck);
@@ -413,7 +414,6 @@ public class AvlTree
 
     private void inOrder(Node current, ArrayList<Integer> allItems)
     {
-
         if(current == null)
             return;
         else
