@@ -122,6 +122,7 @@ public class AvlTree
     }
     //AVL rotations
 
+    //checks if balanced, if not balance it
     private int isBalanced(Node nodeItem, Node parent, int newData, int counter)
     {
         if(Math.abs(nodeItem.getAVLVal()) > 1)
