@@ -205,8 +205,6 @@ public class AvlTree
             temp.height = (temp.rTree.height + 1) >= (temp.lTree.height + 1)
                     ?  (item.lTree.height + 1) :  (temp.lTree.height + 1);
 
-            temp.lTree.height = (temp.lTree.rTree.height + 1) >= (temp.lTree.lTree.height + 1)
-                    ?  (temp.lTree.rTree.height + 1) : (temp.lTree.lTree.height + 1);
         }
         else
         {
