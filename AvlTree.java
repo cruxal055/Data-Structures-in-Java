@@ -30,7 +30,7 @@ public class AvlTree
             int val1, val2;
             val1 = (rTree != null) ? rTree.height + 1 : 0;
             val2 = lTree != null ? lTree.height + 1 : 0;
-            return Math.abs(val1  - val2 );
+            return val1  - val2 ;
         }
 
         Node retrieveChild()
@@ -75,7 +75,11 @@ public class AvlTree
             ++size;
         }
         else
-            traverse(root, null,  newData, 0);
+        {
+            if(contains(newData))
+                return;
+            traverse(root, null, newData, 0);
+        }
 
     }
 
@@ -117,11 +121,32 @@ public class AvlTree
         }
 
 
-        if(nodeItem.getAVLVal() > 1)
+        if(Math.abs(nodeItem.getAVLVal()) > 1)
         {
-//            nodeItem = right(nodeItem);
-            System.out.println("balancing at: " + nodeItem.data);
-            nodeItem = leftRight(nodeItem);
+
+            if(nodeItem.data < newData) //right
+            {
+                if(nodeItem.rTree.data < newData)
+                {
+                    nodeItem = right(nodeItem);
+                }
+                else
+                {
+                    nodeItem = rightLeft(nodeItem);
+                }
+            }
+            else //left
+            {
+                if(nodeItem.lTree.data > newData)
+                {
+                    nodeItem = left(nodeItem);
+                }
+                else
+                {
+                    nodeItem = leftRight(nodeItem);
+                }
+            }
+
             if(parent == null)
                 root = nodeItem;
             else
@@ -165,8 +190,9 @@ public class AvlTree
         return temp;
     }
 
-    public Node left(Node item)
+    private Node left(Node item)
     {
+
         Node temp = item.lTree;
         if(item.rTree != null)
         {
@@ -178,6 +204,9 @@ public class AvlTree
             temp.rTree = item;
             temp.height = (temp.rTree.height + 1) >= (temp.lTree.height + 1)
                     ?  (item.lTree.height + 1) :  (temp.lTree.height + 1);
+
+            temp.lTree.height = (temp.lTree.rTree.height + 1) >= (temp.lTree.lTree.height + 1)
+                    ?  (temp.lTree.rTree.height + 1) : (temp.lTree.lTree.height + 1);
         }
         else
         {
@@ -194,11 +223,11 @@ public class AvlTree
     private void retreiveHeight(Node item)
     {
       if(item.rTree == null)
-          item.height = item.lTree.height;
+          item.height = (item.lTree.height + 1);
       else
       {
           if(item.lTree == null)
-              item.height = item.rTree.height;
+              item.height = item.rTree.height + 1;
           else
           {
               item.height = (item.lTree.height + 1) >= (item.rTree.height + 1)
@@ -224,8 +253,10 @@ public class AvlTree
                 temp.rTree.lTree = temp2;
             retreiveHeight(temp.lTree);
             retreiveHeight(temp.rTree);
+
             temp.height = (temp.lTree.height + 1) >= (temp.rTree.height + 1)
                     ? (temp.lTree.height + 1)  : (temp.rTree.height + 1);
+
         }
         else
         {
@@ -238,24 +269,33 @@ public class AvlTree
         return temp;
     }
 
-    public Node rightLeft(Node item)
+    private Node rightLeft(Node item)
     {
         Node temp;
         temp = item.rTree.lTree;
         item.rTree.lTree = null;
         if(item.lTree != null)
         {
-            temp.rTree = item.rTree;
-            item.rTree = null;
-            Node temp2 = temp.lTree;
-            temp.lTree = item;
-            item.lTree.rTree = temp2;
+          Node temp1 = temp.lTree, temp2 = temp.rTree;
+          temp.rTree = item.rTree;
+          item.rTree = null;
+          temp.lTree = item;
+            if(temp1 != null)
+                temp.lTree.rTree = temp1;
+            if(temp2 != null)
+                temp.rTree.lTree = temp2;
+            retreiveHeight(temp.lTree);
+            retreiveHeight(temp.rTree);
+            temp.height = (temp.lTree.height + 1) >= (temp.rTree.height + 1)
+                    ? (temp.lTree.height + 1)  : (temp.rTree.height + 1);
         }
         else
         {
             temp.rTree = item.rTree;
             item.rTree = null;
             temp.lTree = item;
+            temp.height = 1;
+            temp.rTree.height = temp.lTree.height = 0;
         }
         return temp;
     }
@@ -392,18 +432,29 @@ public class AvlTree
 
     public static void main(String args[])
     {
-        AvlTree temp = new AvlTree();
-//
-////        int arr[] = {1,2,3};
-                int arr[] = {4,2,8,1,3,6,10,5,7,9,11,12};
-//        int arr[] = {1,2,3,4,5, 6};
-//
-//        //        int arr[] = {4,2,6,1,3,5,7,8,9};
-        for(int i = 0; i < arr.length; ++i)
-            temp.insert(arr[i]);
-        temp.inOrderTraversal();
-//        System.out.println("height is: " + temp.getHeight());
-//        int x = 5;
+//        AvlTree temp = new AvlTree();
+////
+//////        int arr[] = {1,2,3};
+//                int arr[] = {4,2,8,1,3,6,10,5,7,9,11,12};
+////        int arr[] = {1,2,3,4,5, 6};
+////
+////        //        int arr[] = {4,2,6,1,3,5,7,8,9};
+//        for(int i = 0; i < arr.length; ++i)
+//            temp.insert(arr[i]);
+//        temp.inOrderTraversal();
+////        System.out.println("height is: " + temp.getHeight());
+////        int x = 5;
+
+        AvlTree tester = new AvlTree();
+        ArrayList<Integer> arr = new ArrayList<>();
+        for(int i = 90; i <= 100; ++i)
+        {
+            arr.add(i);
+        }
+        for(int i = 100; i >= 90; --i) {
+            tester.insert(i);
+        }
+//        assertEquals(arr,tester.inOrderTraversal());
 
     }
 
