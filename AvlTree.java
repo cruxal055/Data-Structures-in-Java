@@ -215,10 +215,8 @@ public class AvlTree
             temp.lTree = item;
             Node lTree = temp.lTree;
 
-            lTree.height = (lTree.rTree.height + 1) > (lTree.lTree.height + 1) ?
-                    lTree.rTree.height + 1 : lTree.lTree.height + 1;
-            temp.height = (temp.rTree.height + 1) > (temp.lTree.height + 1) ?
-                    (temp.rTree.height + 1) : (temp.lTree.height + 1);
+            lTree.height = retrieveHeightSingles(lTree);
+            temp.height = retrieveHeightSingles(temp);
         }
         else
         {
@@ -241,12 +239,12 @@ public class AvlTree
         {
             item.lTree = null;
             item.lTree = temp.rTree;
-            item.height = (item.rTree.height + 1) >=  (item.lTree.height + 1)
-                    ? (item.rTree.height + 1) :  (item.lTree.height + 1);
+            item.height = retrieveHeightSingles(item);
+
             temp.rTree = null;
             temp.rTree = item;
-            temp.height = (temp.rTree.height + 1) >= (temp.lTree.height + 1)
-                    ?  (item.lTree.height + 1) :  (temp.lTree.height + 1);
+            temp.height = retrieveHeightSingles(item);
+
 
         }
         else
@@ -259,10 +257,26 @@ public class AvlTree
         return temp;
     }
 
+    private int retrieveHeightSingles(Node item)
+    {
+        if(item.rTree  == null|| item.lTree == null)
+        {
+            return item.rTree == null  ? item.lTree.height + 1 : item.rTree.height + 1;
+        }
+        else
+        {
+            return (item.rTree.height + 1) >=  (item.lTree.height + 1)
+                    ? (item.rTree.height + 1) :  (item.lTree.height + 1);
+        }
+    }
+
+
 
 
     private void retreiveHeight(Node item)
     {
+        if(item.lTree == null && item.rTree == null)
+            item.height = 0;
       if(item.rTree == null)
           item.height = (item.lTree.height + 1);
       else
@@ -292,8 +306,10 @@ public class AvlTree
                 temp.lTree.rTree = temp1;
             if(temp2 != null)
                 temp.rTree.lTree = temp2;
-            retreiveHeight(temp.lTree);
-            retreiveHeight(temp.rTree);
+            if(temp.lTree != null)
+                retreiveHeight(temp.lTree);
+            if(temp.rTree != null)
+                retreiveHeight(temp.rTree);
 
             temp.height = (temp.lTree.height + 1) >= (temp.rTree.height + 1)
                     ? (temp.lTree.height + 1)  : (temp.rTree.height + 1);
