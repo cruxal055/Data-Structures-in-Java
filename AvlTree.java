@@ -24,23 +24,43 @@ public class AvlTree
             lTree = rTree = null;
             height  = 0;
         }
-        int getAVLVal()
+        public int getAVLVal()
         {
             int val1, val2;
-            val1 = (rTree != null) ? rTree.height + 1 : 0;
-            val2 = lTree != null ? lTree.height + 1 : 0;
+            val1 = ((rTree != null) ? rTree.height + 1 : 0);
+            val2 = ((lTree != null) ? lTree.height + 1 : 0);
             return val1  - val2 ;
         }
 
-        Node retrieveChild()
+        public Node getBiggerChild()
+        {
+            if(lTree == null)
+                return rTree;
+            else
+            {
+                if(rTree == null)
+                    return lTree;
+                else
+                {
+                    return (rTree.height >= lTree.height) ? rTree : lTree;
+                }
+            }
+
+        }
+
+        public Node retrieveChild()
         {
             return (lTree == null) ? rTree : lTree;
         }
 
-        void wipeNonData()
+        int childCount()
         {
-            height = 0;
-            lTree = rTree = null;
+            int counter = 0;
+            if(lTree != null)
+                ++counter;
+            if(rTree != null)
+                ++counter;
+            return counter;
         }
 
         public int compareTo(Node other)
@@ -48,10 +68,28 @@ public class AvlTree
             return other.data - data;
         }
 
+        public void updateHeight()
+        {
+            if(lTree == null || rTree == null)
+            {
+                if(lTree == null && rTree == null)
+                    height = 0;
+                else
+                    height = (lTree == null ? rTree.height + 1 : lTree.height + 1);
+            }
+            else
+            {
+                int height = (rTree.height + 1) >= (lTree.height + 1) ?
+                        rTree.height + 1 : lTree.height + 1;
+                if(height != height)
+                    height = height;
+            }
+        }
+
 
     }
 
-    private Node root;
+    public Node root;
     private int size;
 
     public AvlTree()
@@ -112,12 +150,12 @@ public class AvlTree
                 }
             }
         }
-        counter = isBalanced(nodeItem, parent, newData, counter);
         ++counter;
         if(nodeItem.height < counter)
         {
             nodeItem.height = counter;
         }
+        counter = isBalanced(nodeItem, parent, newData, counter);
         return counter;
     }
     //AVL rotations
@@ -163,7 +201,6 @@ public class AvlTree
             return nodeItem.height;
         }
         return counter;
-
     }
 
     private Node right(Node item)
@@ -189,6 +226,7 @@ public class AvlTree
             item.height = 0;
             temp.height = 1;
         }
+        int x = 100;
         return temp;
     }
 
@@ -306,6 +344,8 @@ public class AvlTree
     public void remove(int toRemove)
     {
         removeTraverse(root, null, toRemove );
+        --size;
+
 
     }
 
@@ -315,20 +355,20 @@ public class AvlTree
         if(child == null)
         {
             throw new IllegalArgumentException("Value not Found in Tree");
-
         }
         if(newData < child.data)
         {
-
-            parent = child;
-            child = child.lTree;
+//            parent = child;
+//            child = child.lTree;
+            removeTraverse(child.lTree, child, newData);
         }
         else
         {
             if(newData > child.data)
             {
-                parent = child;
-                child = child.rTree;
+//                parent = child;
+//                child = child.rTree;
+                removeTraverse(child.rTree, child, newData);
             }
             else
             {
@@ -338,7 +378,14 @@ public class AvlTree
                 switch(count)
                 {
                     case 0:
-                        parent.lTree = parent.rTree = null;
+                        if(parent.data > newData)
+                            parent.lTree = null;
+                        else
+                            parent.rTree = null;
+                        if(parent.rTree == null && parent.lTree == null)
+                            parent.height = 1;
+                        else
+                            parent.height = 0;
                         break;
                     case 1:
                         if(child.lTree != null)
@@ -351,6 +398,7 @@ public class AvlTree
                             child.data = child.rTree.data;
                             child.rTree = null;
                         }
+                        child.height = 0;
                         break;
                     case 2:
                         Node reference = child.rTree, parentReference = child;
@@ -358,18 +406,135 @@ public class AvlTree
                         {
                             parentReference = reference;
                             reference = reference.lTree;
+                        }
+                        int temp = child.data;
+                        child.data = reference.data;
+                        reference.data = temp;
+                        int x = 5;
+
+                        if(reference.childCount() == 1)
+                        {
+
+                            reference.data = reference.rTree.data;
+                            reference.rTree = null;
+                            reference.height = 0;
+                        }
+                        else
+                        {
+                            if(parentReference.lTree == reference)
+                            {
+                                parentReference.lTree = null;
+                            }
+                            else
+                            {
+                                parentReference.rTree = null;
+                            }
+                            parentReference.updateHeight();
 
                         }
-                        child.data = parentReference.lTree.data;
-                        parentReference.lTree = null;
+                        child.updateHeight();
                         break;
                     default: //here for good practice
                 }
-
             }
         }
+        child.updateHeight();
+        removalReBalance(child, parent);
+    }
 
-        removeTraverse(child, parent, newData);
+    private void noChild(Node parent, int newData)
+    {
+        if(parent.data > newData)
+            parent.lTree = null;
+        else
+            parent.rTree = null;
+        if(parent.rTree == null && parent.lTree == null)
+            parent.height = 1;
+        else
+            parent.height = 0;
+    }
+    private void oneChild(Node child)
+    {
+        if(child.lTree != null)
+        {
+            child.data = child.lTree.data;
+            child.lTree = null;
+        }
+        else
+        {
+            child.data = child.rTree.data;
+            child.rTree = null;
+        }
+        child.height = 0;
+    }
+
+    private void twoChildren(Node child, int newItem)
+    {
+        Node reference = child.rTree, parentReference = child;
+        while(reference.lTree != null)
+        {
+            parentReference = reference;
+            reference = reference.lTree;
+        }
+        int temp = child.data;
+        child.data = reference.data;
+        reference.data = temp;
+        if(reference.childCount() == 1)
+        {
+            oneChild(reference);
+        }
+        else
+        {
+            noChild(parentReference, newItem);
+        }
+        child.updateHeight();
+
+    }
+
+
+    private void removalReBalance(Node nodeItem, Node parent)
+    {
+        Node bigger = nodeItem.getBiggerChild();
+        Node grandfather;
+        if(Math.abs(nodeItem.getAVLVal()) > 1)
+        {
+            if (bigger == nodeItem.lTree) //L
+            {
+                grandfather = bigger.getBiggerChild();
+
+                if (grandfather == bigger.lTree) //LL
+                {
+                    nodeItem = left(nodeItem);
+                }
+                else //LR
+                {
+                    nodeItem = leftRight(nodeItem);
+                }
+            }
+            else  //R
+            {
+
+                int x = 5;
+                grandfather = bigger.getBiggerChild();
+                if (grandfather == bigger.rTree)
+                {
+                    nodeItem = right(nodeItem);
+                }
+                else
+                {
+                    nodeItem = rightLeft(nodeItem);
+                }
+            }
+            if(parent == null)
+                root = nodeItem;
+            else
+            {
+                if (nodeItem.compareTo(parent) > 0)
+                    parent.lTree = nodeItem;
+                else
+                    parent.rTree = nodeItem;
+            }
+        }
     }
 
     public boolean contains(int itemToCheck)
@@ -431,32 +596,27 @@ public class AvlTree
 
     public static void main(String args[])
     {
-//        AvlTree temp = new AvlTree();
-////
-//////        int arr[] = {1,2,3};
-//                int arr[] = {4,2,8,1,3,6,10,5,7,9,11,12};
-////        int arr[] = {1,2,3,4,5, 6};
-////
-////        //        int arr[] = {4,2,6,1,3,5,7,8,9};
-//        for(int i = 0; i < arr.length; ++i)
-//            temp.insert(arr[i]);
-//        temp.inOrderTraversal();
-////        System.out.println("height is: " + temp.getHeight());
-////        int x = 5;
+        Integer arr[] = new Integer[6];
+        arr[0] = 20;
+        arr[1] = 30;
+        arr[2] = 34;
+        arr[3] = 37;
+        arr[4] = 45;
+        arr[5] = 70;
+//        AvlTree tester = new AvlTree(45);
+                AvlTree tester = new AvlTree(45);
 
-        AvlTree tester = new AvlTree();
-        ArrayList<Integer> arr = new ArrayList<>();
-        for(int i = 90; i <= 100; ++i)
-        {
-            arr.add(i);
-        }
-        for(int i = 100; i >= 90; --i) {
-            tester.insert(i);
-        }
-//        assertEquals(arr,tester.inOrderTraversal());
+        tester.insert(30);
+        tester.insert(20);
+        tester.insert(37);
+        tester.insert(34);
+        tester.insert(50);
+        tester.insert(70);
+        tester.insert(81);
+        tester.remove(50);
+        System.out.println("done");
+        int x = 5;
 
     }
-
-
 
 }
