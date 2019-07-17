@@ -1,3 +1,4 @@
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.ArrayList;
@@ -232,8 +233,10 @@ public class AvlTree
 
     private Node left(Node item)
     {
-
+        int homo = 3;
         Node temp = item.lTree;
+        int zd = 4;
+//        if(item.rTree != null)
         if(item.rTree != null)
         {
             item.lTree = null;
@@ -401,11 +404,15 @@ public class AvlTree
                         child.height = 0;
                         break;
                     case 2:
+                        Deque<Node> route = new LinkedList<Node>();
                         Node reference = child.rTree, parentReference = child;
+                        route.add(child);
+                        route.add(child.rTree);
                         while(reference.lTree != null)
                         {
                             parentReference = reference;
                             reference = reference.lTree;
+                            route.add(reference);
                         }
                         int temp = child.data;
                         child.data = reference.data;
@@ -430,9 +437,27 @@ public class AvlTree
                                 parentReference.rTree = null;
                             }
                             parentReference.updateHeight();
-
                         }
-                        child.updateHeight();
+//                        child.updateHeight();
+                        Node temp0, temp1;
+                        while(!route.isEmpty())
+                        {
+                            temp0 = route.getLast();
+                            route.removeLast();
+                            if(route.isEmpty())
+                            {
+                                System.out.println("emptied " + temp0.data);
+                                removalReBalance(temp0, null);
+                            }
+                            else
+                            {
+                                temp1 = route.getLast();
+                                System.out.println("emptied " + temp0.data + " and " + temp1.data);
+                                route.removeLast();
+                                removalReBalance(temp0,temp1);
+
+                            }
+                        }
                         break;
                     default: //here for good practice
                 }
@@ -440,55 +465,6 @@ public class AvlTree
         }
         child.updateHeight();
         removalReBalance(child, parent);
-    }
-
-    private void noChild(Node parent, int newData)
-    {
-        if(parent.data > newData)
-            parent.lTree = null;
-        else
-            parent.rTree = null;
-        if(parent.rTree == null && parent.lTree == null)
-            parent.height = 1;
-        else
-            parent.height = 0;
-    }
-    private void oneChild(Node child)
-    {
-        if(child.lTree != null)
-        {
-            child.data = child.lTree.data;
-            child.lTree = null;
-        }
-        else
-        {
-            child.data = child.rTree.data;
-            child.rTree = null;
-        }
-        child.height = 0;
-    }
-
-    private void twoChildren(Node child, int newItem)
-    {
-        Node reference = child.rTree, parentReference = child;
-        while(reference.lTree != null)
-        {
-            parentReference = reference;
-            reference = reference.lTree;
-        }
-        int temp = child.data;
-        child.data = reference.data;
-        reference.data = temp;
-        if(reference.childCount() == 1)
-        {
-            oneChild(reference);
-        }
-        else
-        {
-            noChild(parentReference, newItem);
-        }
-        child.updateHeight();
-
     }
 
 
@@ -502,12 +478,17 @@ public class AvlTree
             {
                 grandfather = bigger.getBiggerChild();
 
-                if (grandfather == bigger.lTree) //LL
+
+                if (grandfather == bigger.lTree || bigger.getAVLVal() == 0) //LL
                 {
+                    System.out.println("left left");
+                    int r = 4;
                     nodeItem = left(nodeItem);
+                    int y = 5;
                 }
                 else //LR
                 {
+                    System.out.println("left right");
                     nodeItem = leftRight(nodeItem);
                 }
             }
@@ -516,12 +497,14 @@ public class AvlTree
 
                 int x = 5;
                 grandfather = bigger.getBiggerChild();
-                if (grandfather == bigger.rTree)
+                if (grandfather == bigger.rTree || bigger.getAVLVal() == 0)
                 {
+                    System.out.println("right right");
                     nodeItem = right(nodeItem);
                 }
                 else
                 {
+                    System.out.println("rift left");
                     nodeItem = rightLeft(nodeItem);
                 }
             }
@@ -536,6 +519,8 @@ public class AvlTree
             }
         }
     }
+
+
 
     public boolean contains(int itemToCheck)
     {
