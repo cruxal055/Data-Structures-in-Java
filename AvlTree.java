@@ -171,11 +171,21 @@ public class AvlTree
             {
                 if(nodeItem.rTree.data < newData)
                 {
+
                     nodeItem = right(nodeItem);
                 }
                 else
                 {
+                    if(newData == 891)
+                    {
+                        Node root2 = root;
+                    }
                     nodeItem = rightLeft(nodeItem);
+                    if(newData == 891)
+                    {
+                        Node root2 = root;
+                        int x = 5;
+                    }
                 }
             }
             else //left
@@ -209,12 +219,13 @@ public class AvlTree
         Node temp = item.rTree;
         if(temp.lTree != null)
         {
+            Node root2  = root;
+            int c = 5;
             Node temp2 = temp.lTree;
             item.rTree = null;
             item.rTree = temp2;
             temp.lTree = item;
             Node lTree = temp.lTree;
-
             lTree.height = retrieveHeightSingles(lTree);
             temp.height = retrieveHeightSingles(temp);
         }
@@ -237,19 +248,27 @@ public class AvlTree
 //        if(item.rTree != null)
         if(item.rTree != null)
         {
+            System.out.println("yoooo1");
             item.lTree = null;
             item.lTree = temp.rTree;
-            item.height = retrieveHeightSingles(item);
-
             temp.rTree = null;
+            item.height = retrieveHeightSingles(item);
+            item.lTree.updateHeight();
+            item.rTree.updateHeight();
             temp.rTree = item;
-            temp.height = retrieveHeightSingles(item);
-
+            temp.height = retrieveHeightSingles(temp);
+            temp.lTree.updateHeight();
+            temp.rTree.updateHeight();
 
         }
         else
         {
             item.lTree = null;
+            if(temp.rTree != null)
+            {
+                item.lTree = temp.rTree;
+                temp.rTree = null;
+            }
             temp.rTree = item;
             item.height = 0;
             temp.height = 1;
@@ -296,7 +315,7 @@ public class AvlTree
         Node temp;
         temp = item.lTree.rTree;
         item.lTree.rTree = null;
-        if(item.rTree != null)
+        if(item.rTree != null )
         {
             Node temp1 = temp.lTree, temp2 = temp.rTree;
             temp.lTree = item.lTree;
@@ -331,7 +350,7 @@ public class AvlTree
         Node temp;
         temp = item.rTree.lTree;
         item.rTree.lTree = null;
-        if(item.lTree != null)
+        if(item.lTree != null )
         {
           Node temp1 = temp.lTree, temp2 = temp.rTree;
           temp.rTree = item.rTree;
@@ -397,16 +416,19 @@ public class AvlTree
                 switch(count)
                 {
                     case 0:
+                        System.out.println("0 children");
                         if(parent.data > newData)
                             parent.lTree = null;
                         else
                             parent.rTree = null;
-                        if(parent.rTree == null && parent.lTree == null)
-                            parent.height = 1;
-                        else
-                            parent.height = 0;
+                        parent.updateHeight();
+//                        if(parent.rTree == null && parent.lTree == null)
+//                            parent.height = 1;
+//                        else
+//                            parent.height = 0;
                         break;
                     case 1:
+                        System.out.println("1 children");
                         if(child.lTree != null)
                         {
                             child.data = child.lTree.data;
@@ -420,6 +442,7 @@ public class AvlTree
                         child.height = 0;
                         break;
                     case 2:
+                        System.out.println("2 children");
                         Deque<Node> route = new LinkedList<Node>();
                         Node reference = child.rTree, parentReference = child;
                         route.add(child);
@@ -462,13 +485,11 @@ public class AvlTree
                             route.removeLast();
                             if(route.isEmpty())
                             {
-                                System.out.println("emptied " + temp0.data);
                                 removalReBalance(temp0, null);
                             }
                             else
                             {
                                 temp1 = route.getLast();
-                                System.out.println("emptied " + temp0.data + " and " + temp1.data);
                                 route.removeLast();
                                 removalReBalance(temp0,temp1);
 
@@ -480,7 +501,13 @@ public class AvlTree
             }
         }
         child.updateHeight();
+        if(newData == 4) {
+            int x = 4;
+            System.out.println("the child is: " + child.data);
+            System.out.println("hello : " + child.height);
+        }
         removalReBalance(child, parent);
+
     }
 
 
@@ -497,8 +524,8 @@ public class AvlTree
 
                 if (grandfather == bigger.lTree || bigger.getAVLVal() == 0) //LL
                 {
-                    System.out.println("left left");
-                    int r = 4;
+                    int x = 5;
+                    System.out.println("left left at"  + nodeItem.data);
                     nodeItem = left(nodeItem);
                     int y = 5;
                 }
