@@ -242,13 +242,9 @@ public class AvlTree
 
     private Node left(Node item)
     {
-        int homo = 3;
         Node temp = item.lTree;
-        int zd = 4;
-//        if(item.rTree != null)
         if(item.rTree != null)
         {
-            System.out.println("yoooo1");
             item.lTree = null;
             item.lTree = temp.rTree;
             temp.rTree = null;
@@ -268,10 +264,10 @@ public class AvlTree
             {
                 item.lTree = temp.rTree;
                 temp.rTree = null;
+                item.updateHeight();
             }
             temp.rTree = item;
-            item.height = 0;
-            temp.height = 1;
+            temp.updateHeight();
         }
         return temp;
     }
@@ -392,20 +388,16 @@ public class AvlTree
 
         if(child == null)
         {
-            throw new IllegalArgumentException("Value not Found in Tree");
+            return;
         }
         if(newData < child.data)
         {
-//            parent = child;
-//            child = child.lTree;
             removeTraverse(child.lTree, child, newData);
         }
         else
         {
             if(newData > child.data)
             {
-//                parent = child;
-//                child = child.rTree;
                 removeTraverse(child.rTree, child, newData);
             }
             else
@@ -416,11 +408,26 @@ public class AvlTree
                 switch(count)
                 {
                     case 0:
-                        System.out.println("0 children");
-                        if(parent.data > newData)
-                            parent.lTree = null;
+//                        if(parent.data > newData)
+////                            parent.lTree = null;
+////                        else
+////                            parent.rTree = null;
+
+                        if(parent.lTree != null && parent.rTree != null)
+                        {
+                            if(parent.lTree.data == newData)
+                                parent.lTree = null;
+                            else
+                                parent.rTree = null;
+                        }
                         else
-                            parent.rTree = null;
+                        {
+                            if(parent.lTree != null)
+                                parent.lTree = null;
+                            else
+                                parent.rTree = null;
+                        }
+
                         parent.updateHeight();
 //                        if(parent.rTree == null && parent.lTree == null)
 //                            parent.height = 1;
@@ -428,7 +435,6 @@ public class AvlTree
 //                            parent.height = 0;
                         break;
                     case 1:
-                        System.out.println("1 children");
                         if(child.lTree != null)
                         {
                             child.data = child.lTree.data;
@@ -442,70 +448,31 @@ public class AvlTree
                         child.height = 0;
                         break;
                     case 2:
-                        System.out.println("2 children");
                         Deque<Node> route = new LinkedList<Node>();
                         Node reference = child.rTree, parentReference = child;
                         route.add(child);
                         route.add(child.rTree);
                         while(reference.lTree != null)
                         {
+                            route.add(reference);
                             parentReference = reference;
                             reference = reference.lTree;
-                            route.add(reference);
                         }
+
+
                         int temp = child.data;
                         child.data = reference.data;
                         reference.data = temp;
                         int x = 5;
+//                        removeTraverse(reference, parentReference, newData); original
+                        removeTraverse(child.rTree, child , newData);
 
-                        if(reference.childCount() == 1)
-                        {
-
-                            reference.data = reference.rTree.data;
-                            reference.rTree = null;
-                            reference.height = 0;
-                        }
-                        else
-                        {
-                            if(parentReference.lTree == reference)
-                            {
-                                parentReference.lTree = null;
-                            }
-                            else
-                            {
-                                parentReference.rTree = null;
-                            }
-                            parentReference.updateHeight();
-                        }
-//                        child.updateHeight();
-                        Node temp0, temp1;
-                        while(!route.isEmpty())
-                        {
-                            temp0 = route.getLast();
-                            route.removeLast();
-                            if(route.isEmpty())
-                            {
-                                removalReBalance(temp0, null);
-                            }
-                            else
-                            {
-                                temp1 = route.getLast();
-                                route.removeLast();
-                                removalReBalance(temp0,temp1);
-
-                            }
-                        }
                         break;
                     default: //here for good practice
                 }
             }
         }
         child.updateHeight();
-        if(newData == 4) {
-            int x = 4;
-            System.out.println("the child is: " + child.data);
-            System.out.println("hello : " + child.height);
-        }
         removalReBalance(child, parent);
 
     }
@@ -525,13 +492,13 @@ public class AvlTree
                 if (grandfather == bigger.lTree || bigger.getAVLVal() == 0) //LL
                 {
                     int x = 5;
-                    System.out.println("left left at"  + nodeItem.data);
+//                    System.out.println("left left at"  + nodeItem.data);
                     nodeItem = left(nodeItem);
                     int y = 5;
                 }
                 else //LR
                 {
-                    System.out.println("left right");
+//                    System.out.println("left right");
                     nodeItem = leftRight(nodeItem);
                 }
             }
@@ -542,12 +509,12 @@ public class AvlTree
                 grandfather = bigger.getBiggerChild();
                 if (grandfather == bigger.rTree || bigger.getAVLVal() == 0)
                 {
-                    System.out.println("right right");
+//                    System.out.println("right right");
                     nodeItem = right(nodeItem);
                 }
                 else
                 {
-                    System.out.println("rift left");
+//                    System.out.println("rift left");
                     nodeItem = rightLeft(nodeItem);
                 }
             }
