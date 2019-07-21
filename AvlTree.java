@@ -80,10 +80,10 @@ public class AvlTree
             }
             else
             {
-                int height = (rTree.height + 1) >= (lTree.height + 1) ?
+                int nHeight = (rTree.height + 1) >= (lTree.height + 1) ?
                         rTree.height + 1 : lTree.height + 1;
-                if(height != height)
-                    height = height;
+                if(height != nHeight)
+                    height = nHeight;
             }
         }
 
@@ -107,6 +107,8 @@ public class AvlTree
 
     public void insert(int newData)
     {
+
+
         if(root == null)
         {
             root = new Node(newData);
@@ -124,6 +126,7 @@ public class AvlTree
 
     private int traverse(Node nodeItem, Node parent, int newData, int counter)
     {
+
         if(newData < nodeItem.data)
         {
             if(nodeItem.lTree == null)
@@ -156,7 +159,10 @@ public class AvlTree
         {
             nodeItem.height = counter;
         }
+
         counter = isBalanced(nodeItem, parent, newData, counter);
+
+
         return counter;
     }
     //AVL rotations
@@ -164,6 +170,7 @@ public class AvlTree
     //checks if balanced, if not balance it
     private int isBalanced(Node nodeItem, Node parent, int newData, int counter)
     {
+
         if(Math.abs(nodeItem.getAVLVal()) > 1)
         {
 
@@ -171,34 +178,32 @@ public class AvlTree
             {
                 if(nodeItem.rTree.data < newData)
                 {
-
+                    int x = 5000;
+                    System.out.print("right ");
                     nodeItem = right(nodeItem);
+                    int p = 2000;
                 }
                 else
                 {
-                    if(newData == 891)
-                    {
-                        Node root2 = root;
-                    }
+                    System.out.print("right_left ");
                     nodeItem = rightLeft(nodeItem);
-                    if(newData == 891)
-                    {
-                        Node root2 = root;
-                        int x = 5;
-                    }
                 }
             }
             else //left
             {
                 if(nodeItem.lTree.data > newData)
                 {
+                    System.out.print("left ");
                     nodeItem = left(nodeItem);
+                    int x = 9;
                 }
                 else
                 {
+                    System.out.print("left_right " );
                     nodeItem = leftRight(nodeItem);
                 }
             }
+            nodeItem.updateHeight();
 
             if(parent == null)
                 root = nodeItem;
@@ -209,8 +214,15 @@ public class AvlTree
                 else
                     parent.rTree = nodeItem;
             }
+            if(newData == 22796)
+            {
+                Node root2 = root;
+                System.out.println("yoooo");
+                int y = 1000;
+            }
             return nodeItem.height;
         }
+
         return counter;
     }
 
@@ -219,6 +231,7 @@ public class AvlTree
         Node temp = item.rTree;
         if(temp.lTree != null)
         {
+            System.out.print(" right1 ");
             Node root2  = root;
             int c = 5;
             Node temp2 = temp.lTree;
@@ -227,14 +240,19 @@ public class AvlTree
             temp.lTree = item;
             Node lTree = temp.lTree;
             lTree.height = retrieveHeightSingles(lTree);
+            //added this
+            temp.rTree.height = retrieveHeightSingles(temp.rTree);
             temp.height = retrieveHeightSingles(temp);
         }
         else
         {
+            Node root2 = root;
+            int j = 100;
             item.rTree = null;
             temp.lTree = item;
             item.height = 0;
             temp.height = 1;
+            int x = 100;
         }
         int x = 100;
         return temp;
@@ -252,9 +270,10 @@ public class AvlTree
             item.lTree.updateHeight();
             item.rTree.updateHeight();
             temp.rTree = item;
-            temp.height = retrieveHeightSingles(temp);
+//            temp.height = retrieveHeightSingles(temp);
             temp.lTree.updateHeight();
             temp.rTree.updateHeight();
+            temp.height = retrieveHeightSingles(temp);
 
         }
         else
@@ -267,6 +286,8 @@ public class AvlTree
                 item.updateHeight();
             }
             temp.rTree = item;
+            temp.rTree.updateHeight();
+            temp.lTree.updateHeight();
             temp.updateHeight();
         }
         return temp;
@@ -276,7 +297,10 @@ public class AvlTree
     {
         if(item.rTree  == null|| item.lTree == null)
         {
-            return item.rTree == null  ? item.lTree.height + 1 : item.rTree.height + 1;
+            if(item.rTree == null && item.lTree == null)
+                return 0;
+            else
+                return item.rTree == null  ? item.lTree.height + 1 : item.rTree.height + 1;
         }
         else
         {
@@ -291,9 +315,14 @@ public class AvlTree
     private void retreiveHeight(Node item)
     {
         if(item.lTree == null && item.rTree == null)
+        {
             item.height = 0;
+            return;
+        }
       if(item.rTree == null)
+      {
           item.height = (item.lTree.height + 1);
+      }
       else
       {
           if(item.lTree == null)
