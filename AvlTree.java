@@ -179,13 +179,13 @@ public class AvlTree
                 if(nodeItem.rTree.data < newData)
                 {
                     int x = 5000;
-                    System.out.print("right ");
+//                    System.out.print("right ");
                     nodeItem = right(nodeItem);
                     int p = 2000;
                 }
                 else
                 {
-                    System.out.print("right_left ");
+//                    System.out.print("right_left ");
                     nodeItem = rightLeft(nodeItem);
                 }
             }
@@ -193,13 +193,10 @@ public class AvlTree
             {
                 if(nodeItem.lTree.data > newData)
                 {
-                    System.out.print("left ");
                     nodeItem = left(nodeItem);
-                    int x = 9;
                 }
                 else
                 {
-                    System.out.print("left_right " );
                     nodeItem = leftRight(nodeItem);
                 }
             }
@@ -214,12 +211,7 @@ public class AvlTree
                 else
                     parent.rTree = nodeItem;
             }
-            if(newData == 22796)
-            {
-                Node root2 = root;
-                System.out.println("yoooo");
-                int y = 1000;
-            }
+
             return nodeItem.height;
         }
 
@@ -231,7 +223,6 @@ public class AvlTree
         Node temp = item.rTree;
         if(temp.lTree != null)
         {
-            System.out.print(" right1 ");
             Node root2  = root;
             int c = 5;
             Node temp2 = temp.lTree;
@@ -246,8 +237,6 @@ public class AvlTree
         }
         else
         {
-            Node root2 = root;
-            int j = 100;
             item.rTree = null;
             temp.lTree = item;
             item.height = 0;
@@ -520,14 +509,10 @@ public class AvlTree
 
                 if (grandfather == bigger.lTree || bigger.getAVLVal() == 0) //LL
                 {
-                    int x = 5;
-//                    System.out.println("left left at"  + nodeItem.data);
                     nodeItem = left(nodeItem);
-                    int y = 5;
                 }
                 else //LR
                 {
-//                    System.out.println("left right");
                     nodeItem = leftRight(nodeItem);
                 }
             }
@@ -538,12 +523,10 @@ public class AvlTree
                 grandfather = bigger.getBiggerChild();
                 if (grandfather == bigger.rTree || bigger.getAVLVal() == 0)
                 {
-//                    System.out.println("right right");
                     nodeItem = right(nodeItem);
                 }
                 else
                 {
-//                    System.out.println("rift left");
                     nodeItem = rightLeft(nodeItem);
                 }
             }
