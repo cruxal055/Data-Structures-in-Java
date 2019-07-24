@@ -24,6 +24,11 @@ public class SkipList
 
     public void insert(int item)
     {
+        if(levels.isEmpty())
+        {
+            levels.add(generateDefault(item, null));
+            return;
+        }
        ArrayList<SkipListNode> holder = new ArrayList<>();
         SkipListNode current = levels.get(levels.size()-1);
         while(current != null)
@@ -41,17 +46,24 @@ public class SkipList
                     current = current.next;
             }
         }
+        ++size;
         adjustLinks(item, holder.get(holder.size()-1), null);
+        holder.set(holder.size()-1, holder.get(holder.size()-1).next);
         int whatDigit;
-        for(int i = holder.size()-2; i >= 0; --i)
+        //may potentially give us a negative item
+        //adjusts even level of the skip list
+        if(levels.size() > 1)
         {
-            whatDigit = (int) (Math.random() * 2);
-            if(whatDigit == 0)
-                return;
-            else
+            for (int i = holder.size() - 2; i >= 0; --i)
             {
-                adjustLinks(item, holder.get(i), holder.get(i+1));
-                holder.set(i, holder.get(i).next);
+                whatDigit = (int) (Math.random() * 2);
+                if (whatDigit == 0)
+                    return;
+                else
+                {
+                    adjustLinks(item, holder.get(i), holder.get(i + 1));
+                    holder.set(i, holder.get(i).next);
+                }
             }
         }
         whatDigit = (int) (Math.random() * 2);
@@ -80,7 +92,7 @@ public class SkipList
 
     public boolean contains(int item)
     {
-        SkipListNode current = levels.get(levels.size()-1);
+        SkipListNode current = levels.get(0);
         while(current != null)
         {
             if(current.data == item)
@@ -96,8 +108,24 @@ public class SkipList
         return false;
     }
 
+    public int getSize()
+    {
+        return size;
+    }
+
     public void remove(int item)
     {
+
+    }
+
+    public static void main(String args[])
+    {
+        SkipList item = new SkipList();
+        for(int i = 0; i  < 10; ++i)
+            item.insert(i);
+        int x = 5;
+        for(int i = 0; i  < 10; ++i)
+            System.out.println(item.contains(i));
 
     }
 
