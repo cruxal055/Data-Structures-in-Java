@@ -30,7 +30,8 @@ public class SkipList
             return;
         }
        ArrayList<SkipListNode> holder = new ArrayList<>();
-        SkipListNode current = levels.get(levels.size()-1);
+//        SkipListNode current = levels.get(levels.size()-1);
+        SkipListNode current = levels.get(0);
         while(current != null)
         {
             if(current.data == item)
@@ -115,7 +116,37 @@ public class SkipList
 
     public void remove(int item)
     {
-
+        SkipListNode current = levels.get(0);
+        SkipListNode parent = null;
+        boolean contains = false;
+        while(current != null)
+        {
+            if(current.data == item)
+            {
+                contains = true;
+                break;
+            }
+            else
+            {
+                parent = current;
+                if(current.next.data > item)
+                {
+                    current = current.below;
+                }
+                else
+                    current = current.next;
+            }
+        }
+        if(contains)
+        {
+            SkipListNode temp;
+            while (current != null)
+            {
+                temp = current.below;
+                parent.next = current.next;
+                current = temp;
+            }
+        }
     }
 
     public static void main(String args[])
@@ -126,6 +157,10 @@ public class SkipList
         int x = 5;
         for(int i = 0; i  < 10; ++i)
             System.out.println(item.contains(i));
+        System.out.println("do i have 0? " + item.contains(0));
+        item.remove(0);
+        System.out.println(item.contains(0));
+        System.out.println(item.contains(1));
 
     }
 
