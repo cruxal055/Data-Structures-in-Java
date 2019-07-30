@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+
+//this version of the hash table utilizes seperate chaining to handle collisions
 public class CHashTable extends HashTables
 {
     public CHashTable()
@@ -13,26 +16,38 @@ public class CHashTable extends HashTables
 
     public void add(Object data)
     {
-        ++nodeCount;
-//        if((nodeCount/capacity) > 0.75)
-//        {
-//
-//        }
-//        else
-//        {
-            int pos = getPosition(data);
-            LLNode ref = (LLNode) buckets[pos], parent = null;
+
+        int pos = getPosition(data);
+        LLNode ref = (LLNode) buckets[pos], parent = null;
 
 
-            while(ref != null)
+        while(ref != null)
+        {
+            if(ref.item.equals(data))
+                return;
+            parent = ref;
+            ref = ref.next;
+        }
+
+        if(parent == null)
+        {
+            if(ref != null)
             {
-                if(ref.item.equals(data))
-                    return;
-                parent = ref;
-                ref = ref.next;
+                ref.next = new LLNode(data);
+                ref.next.previous = ref;
             }
-            if(parent == null)
+            else
+            {
                 buckets[pos] = new LLNode(data);
+            }
+        }
+        else
+        {
+            if(ref == null)
+            {
+                parent.next = new LLNode(data);
+                parent.next.previous = parent;
+            }
             else
             {
                 LLNode temp = ref.next;
@@ -42,7 +57,16 @@ public class CHashTable extends HashTables
                 ref.next = temp;
                 temp.previous = ref;
             }
-//        }
+        }
+
+        ++nodeCount;
+
+//            buckets[pos] = new LLNode(data);
+//
+////        System.out.println("at " + data +  " the LF is " +  (double)nodeCount/capacity);
+
+        if( (double)nodeCount/capacity > 0.75)
+            expand();
 
     }
 
@@ -75,6 +99,7 @@ public class CHashTable extends HashTables
 
     }
 
+
     public boolean contains(Object item)
     {
         int pos = getPosition(item);
@@ -82,23 +107,50 @@ public class CHashTable extends HashTables
         return (ref != null);
     }
 
+    private void expand()
+    {
+        Object neo[] = new Object[capacity * 2];
+        LLNode ptr;
+        int whereToEnd = capacity;
+        capacity*=2;
+        for(int i = 0; i < whereToEnd; ++i)
+        {
+            ptr = (LLNode)buckets[i];
+            while(ptr != null)
+            {
+                neo[getPosition(ptr.item)] = ptr;
+                ptr = ptr.next;
+            }
+        }
+        buckets = neo;
+    }
+
+    public ArrayList<Object> traverse()
+    {
+        LLNode temp;
+        ArrayList<Object> toReturn = new ArrayList<>();
+        for(int i = 0; i < capacity; ++i)
+        {
+            temp = (LLNode)buckets[i];
+            while(temp != null)
+            {
+                toReturn.add(temp.item);
+                temp = temp.next;
+            }
+        }
+        return toReturn;
+
+    }
+
+
+
     public static void main(String args[])
     {
         CHashTable neo = new CHashTable();
-        for(int i = 0; i < 5; ++i)
+        for(int i = 0; i < 10; ++i)
             neo.add(new Integer(i));
-        int x = 5;
-        for(int i = 0; i < 10; ++i)
-        {
-            System.out.println("bool value is: " + neo.contains(new Integer(i)));
-        }
-        System.out.println("");
-        for(int i = 0; i < 10; ++i)
-        {
-            neo.remove(new Integer(i));
-            System.out.println("bool value is: " + neo.contains(new Integer(i)));
-        }
-
+        System.out.println("capacity is: " + neo.getCapacity());
+        System.out.println("size is " + neo.getSize());
 
     }
 
