@@ -1,23 +1,21 @@
-public class HashTables<T>
+public class HashTables
 {
-    private Object buckets[];
-    private int nodeCount, capacity;
-
+    protected Object buckets[];
+    protected int nodeCount, capacity;
 
     public HashTables()
     {
         nodeCount = 0;
-        buckets = new Object[10];
+        capacity = 10;
     }
 
     public HashTables(int initialSize)
     {
         nodeCount = 0;
-        buckets = new Object[initialSize];
         capacity = initialSize;
     }
 
-    public int size()
+    public int getSize()
     {
         return nodeCount;
     }
@@ -27,21 +25,35 @@ public class HashTables<T>
         return capacity;
     }
 
-
-    public void add(T item)
+    protected int getPosition(Object data)
     {
-
+        return data.hashCode() % capacity;
     }
 
-    public void remove(T item)
+    public void add(Object item)
     {
-
+        buckets[getPosition(item)] = item;
     }
 
-    public boolean contains(T item)
+    public void remove(Object item)
     {
+        buckets[getPosition(item)] = null;
+    }
+
+    public boolean contains(Object item)
+    {
+        int pos = getPosition(item);
+        if(buckets[pos] != null)
+            return (buckets[pos].equals(item));
         return false;
     }
+
+    public static void main(String args[])
+    {
+        HashTables x = new HashTables();
+        System.out.println(x.getCapacity());
+    }
+
 
 
 }
