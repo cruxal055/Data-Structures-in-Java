@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 //this version of the hash table utilizes seperate chaining to handle collisions
 public class CHashTable extends HashTables
@@ -112,23 +113,27 @@ public class CHashTable extends HashTables
         Object neo[] = new Object[capacity * 2];
         LLNode ptr;
         int whereToEnd = capacity;
+        nodeCount = 0;
         capacity*=2;
+        Object temp[] = buckets;
+        buckets = neo;
+
         for(int i = 0; i < whereToEnd; ++i)
         {
-            ptr = (LLNode)buckets[i];
+            ptr = (LLNode)temp[i];
             while(ptr != null)
             {
-                neo[getPosition(ptr.item)] = ptr;
+                add(ptr.item);
                 ptr = ptr.next;
             }
         }
-        buckets = neo;
     }
 
     public ArrayList<Object> traverse()
     {
         LLNode temp;
         ArrayList<Object> toReturn = new ArrayList<>();
+
         for(int i = 0; i < capacity; ++i)
         {
             temp = (LLNode)buckets[i];
@@ -138,9 +143,11 @@ public class CHashTable extends HashTables
                 temp = temp.next;
             }
         }
+
         return toReturn;
 
     }
+
 
 
 
