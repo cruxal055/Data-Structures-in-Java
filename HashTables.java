@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class HashTables
 {
     protected Object buckets[];
@@ -52,6 +54,18 @@ public class HashTables
     {
         HashTables x = new HashTables();
         System.out.println(x.getCapacity());
+    }
+
+    public ArrayList<Object> traverse()
+    {
+        LLNode temp;
+        ArrayList<Object> toReturn = new ArrayList<>();
+        for(int i = 0; i < capacity; ++i)
+        {
+            temp = (LLNode)buckets[i];
+            toReturn.add(temp.item);
+        }
+        return toReturn;
     }
 
 
