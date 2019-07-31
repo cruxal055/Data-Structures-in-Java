@@ -29,7 +29,7 @@ public class HashTables
 
     protected int getPosition(Object data)
     {
-        return data.hashCode() % capacity;
+        return Math.abs(data.hashCode()) % capacity;
     }
 
     public void add(Object item)
