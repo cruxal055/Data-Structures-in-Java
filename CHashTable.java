@@ -62,10 +62,6 @@ public class CHashTable extends HashTables
 
         ++nodeCount;
 
-//            buckets[pos] = new LLNode(data);
-//
-////        System.out.println("at " + data +  " the LF is " +  (double)nodeCount/capacity);
-
         if( (double)nodeCount/capacity > 0.75)
             expand();
 
@@ -99,7 +95,6 @@ public class CHashTable extends HashTables
         }
 
     }
-
 
     public boolean contains(Object item)
     {
@@ -147,9 +142,6 @@ public class CHashTable extends HashTables
         return toReturn;
 
     }
-
-
-
 
     public static void main(String args[])
     {
