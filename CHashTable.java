@@ -148,6 +148,7 @@ public class CHashTable extends HashTables
         CHashTable neo = new CHashTable();
         for(int i = 0; i < 10; ++i)
             neo.add(new Integer(i));
+        System.out.println( (char)('a' + 25));
         System.out.println("capacity is: " + neo.getCapacity());
         System.out.println("size is " + neo.getSize());
 
