@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class OHashTable extends HashTables
 {
     //this version of the hash table uses open addressing
@@ -52,31 +54,52 @@ public class OHashTable extends HashTables
         }
 
         ++nodeCount;
+
         if(buckets[pos] == null)
             buckets[pos] = new index(data);
         else
             ((index)buckets[pos]).data = data;
 
-        if(capacity == nodeCount)
-        {
+        if((double) nodeCount/capacity >= 0.75)
             expand();
-
-        }
     }
 
     public void expand()
     {
-        index temp[] = new index[capacity * 2];
+        System.out.println("needed to expand at " + capacity);
+        index temp[] = (index[]) buckets;
+        int end = capacity;
         capacity*=2;
-        int tempPos;
-        for(int i = 0 ; i < capacity/2; ++i)
+        nodeCount = 0;
+        buckets =  new index[capacity * 2];
+
+        for(int i = 0 ; i < end; ++i)
+            add(temp[i].data);
+    }
+
+    private int search(Object data)
+    {
+        int pos = getPosition(data);
+        while(buckets[pos] != null && !((index)buckets[pos]).data.equals(data))
+            pos = (++pos%capacity);
+        return pos;
+    }
+
+    public void remove(Object data)
+    {
+        int pos =  search(data);
+        if(buckets[pos] == null)
+            return;
+        else
         {
-           tempPos = getPosition(((index)buckets[i]).data);
-           temp[tempPos] = buckets[i];
+            --nodeCount;
+            ((index) buckets[pos]).occupied = false;
         }
     }
 
-
-
-
+    public boolean contains(Object data)
+    {
+        int pos = search(data);
+        return buckets[pos] != null;
+    }
 }
