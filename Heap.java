@@ -1,7 +1,11 @@
+import java.util.Set;
+import java.util.TreeSet;
+
 public class Heap
 {
     private int arr[];
     private int currIndex, capacity;
+
 
     public Heap()
     {
@@ -17,10 +21,18 @@ public class Heap
         arr[currIndex++] = item;
     }
 
+    public boolean isEmpty()
+    {
+        return currIndex == 0;
+    }
+
     public void add(int item)
     {
         arr[currIndex++] = item;
         int parent = getParent(currIndex - 1), child = currIndex - 1;
+
+
+
         while (parent > 0)
         {
             if (arr[parent] > arr[child])
@@ -40,18 +52,57 @@ public class Heap
     {
         //throw error if it is not there.
         //make sure the size is big enough to do this sorta stuff mkay?
-        
+
+        if(currIndex == 0)
+            throw new Error("heap is empty");
+
         int toReturn = arr[0];
+
         arr[0] = arr[currIndex-1];
         arr[currIndex-1] = 0;
         --currIndex;
 
+
+        int pos = 0, numOfChildren, temp;
+        while(true)
+        {
+            numOfChildren = childCount(pos);
+            int x = 5;
+
+            if(numOfChildren >= 1)
+            {
+                if(numOfChildren == 2)
+                {
+                    if(biggerThanBothChildren(pos))
+                        temp = smallerOfTheTwoChildren(pos);
+                    else
+                        break;
+                }
+                else
+                {
+                    if(arr[pos] > arr[getLChild(pos)])
+                        temp = getLChild(pos);
+                    else
+                        break;
+                }
+                swap(temp, pos);
+                pos = temp;
+            }
+            else
+                break;
+        }
         return toReturn;
     }
 
-    private int getExistingChild(int index)
+    private int smallerOfTheTwoChildren(int index)
     {
-        return (inHeap(getLChild(index))) ? getLChild(index) : getRChild(index);
+
+        return (arr[getRChild(index)] < arr[getLChild(index)]) ? getRChild(index) : getLChild(index);
+    }
+
+    private boolean biggerThanBothChildren(int index)
+    {
+        return arr[getRChild(index)] < arr[index] || arr[getLChild(index)] < arr[index];
     }
 
     private int childCount(int index)
@@ -92,5 +143,23 @@ public class Heap
 
     public int size() { return currIndex-1; }
 
+
+    public static void main(String args[])
+    {
+        Heap item = new Heap();
+
+        Set<Integer> allItems = new TreeSet<>();
+
+        for(int i = 0; i < 50; ++i)
+            item.add(i);
+//        item.remove();
+
+        int y = 5;
+
+        for(int i = 0; i < 50; ++i)
+            System.out.println(item.remove());
+
+
+    }
 
 }
