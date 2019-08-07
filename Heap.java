@@ -48,9 +48,6 @@ public class Heap
 
     public int remove()
     {
-        //throw error if it is not there.
-        //make sure the size is big enough to do this sorta stuff mkay?
-
         if(currIndex == 0)
             throw new Error("heap is empty");
 
@@ -139,7 +136,12 @@ public class Heap
 
     private int getParent(int index) { return (index - 1)/2 ;}
 
-    public int size() { return currIndex-1; }
+    public int size()
+    {
+        if(currIndex == 0)
+            return 0;
+        return currIndex;
+    }
 
 
     public static void main(String args[])
