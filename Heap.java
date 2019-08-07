@@ -31,9 +31,7 @@ public class Heap
         arr[currIndex++] = item;
         int parent = getParent(currIndex - 1), child = currIndex - 1;
 
-
-
-        while (parent > 0)
+        while (parent >= 0)
         {
             if (arr[parent] > arr[child])
             {
